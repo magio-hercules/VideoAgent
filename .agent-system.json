@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "system_id": "creator-doc-router",
+  "guide_version": "2.1",
+  "created_at": "2026-10-07T23:20:59+09:00",
+  "root_agent_max_bytes": 12288,
+  "managed_files": [
+    {
+      "path": "AGENTS.md",
+      "baseline_sha256": "d7a7e97496d094fe08414a6e921dbaed8a8ebde967bcf046ab88dec8056ca811",
+      "ownership": "system-policy"
+    },
+    {
+      "path": "CLAUDE.md",
+      "baseline_sha256": "1eb9a67ec1e3719211c03125f22d1d290424bfc3f09562507f5edc1ff6ed405c",
+      "ownership": "system-entry"
+    },
+    {
+      "path": "INDEX.md",
+      "baseline_sha256": "9ad028710d40bc5036b93a420287b8b6f49e3ca49a5863cd8239af9e4297f0a8",
+      "ownership": "system-map"
+    },
+    {
+      "path": "docs/agent/README.md",
+      "baseline_sha256": "f8053ca463713715c878f414cd405d03f3dd63f43285b6c3b25c21596004bb60",
+      "ownership": "system-router"
+    },
+    {
+      "path": "docs/agent/routes.json",
+      "baseline_sha256": "bd00a8a3253a9ddbe25f7e1d3ac4406130e7be7ad5267769f0d08977397d0c26",
+      "ownership": "system-router"
+    },
+    {
+      "path": "docs/agent/routes.schema.json",
+      "baseline_sha256": "4cc986c1843a59b5852efd646f148f869164b9b1d8013c4e7697e2fc2800407f",
+      "ownership": "system-router"
+    },
+    {
+      "path": "docs/runbooks/local-generation.md",
+      "baseline_sha256": "bc8961ebe9c38ce5b71b2a61b24424cef2cb3e61e96a359e4e800850a0e3a54f",
+      "ownership": "system-runbook"
+    },
+    {
+      "path": "docs/runbooks/paid-generation.md",
+      "baseline_sha256": "c8a1635fc69e99b09e96f83f0f7a97dfceb6ecb254a01f548d1fe24b849d291b",
+      "ownership": "system-runbook"
+    },
+    {
+      "path": "docs/runbooks/review-delivery.md",
+      "baseline_sha256": "feade8b6848cff690b61614bcad89888567ed6dbc68408a8e72058f908f16d1e",
+      "ownership": "system-runbook"
+    },
+    {
+      "path": "craft/doctrine/production-cycle.md",
+      "baseline_sha256": "c98fa8d80b4d709bf2c63823b03a27ba8b75be0ae5c19ebf15d5b8ec338e45eb",
+      "ownership": "system-doctrine"
+    },
+    {
+      "path": "craft/playbooks/README.md",
+      "baseline_sha256": "d521f6c1ecab8c83360ed42f8150ad26a98af36003c51d5ec4271de96380cbb8",
+      "ownership": "system-index"
+    },
+    {
+      "path": "library/prompts/README.md",
+      "baseline_sha256": "776accb5fc14926fddcbfa4d405b99bf8201611ec8a5b8450f5443fbed394093",
+      "ownership": "system-index"
+    },
+    {
+      "path": "library/workflows/README.md",
+      "baseline_sha256": "984dc80a7e4c3c92c360fa312a02cb7a3b005c2563aae2de0b34b1152f17d391",
+      "ownership": "system-index"
+    },
+    {
+      "path": "productions/_template/BRIEF.md",
+      "baseline_sha256": "67ab75f8ef36b6444a99faad1fc388cb3093ad4a9f78b80d05069f01c38cc8fd",
+      "ownership": "system-template"
+    },
+    {
+      "path": "productions/_template/생성상태.md",
+      "baseline_sha256": "5cc67c1472fac1c61f7074e2e77dbdb9d54434fa1e064ae2c5cd0c2f2cd4d71c",
+      "ownership": "system-template"
+    },
+    {
+      "path": "productions/_template/renders.md",
+      "baseline_sha256": "9a7be60dc14bc14889ac56d311a8bccde661076993fac1160283a51237e602b8",
+      "ownership": "system-template"
+    },
+    {
+      "path": "_infra/doc-router/router.py",
+      "baseline_sha256": "87c4298b22cc032bf7908a498add9e4c229253c369de1adec87fffd4bc82af52",
+      "ownership": "system-tool"
+    },
+    {
+      "path": "_infra/doc-router/tests/test_router.py",
+      "baseline_sha256": "7b855d2bf16f62b483bfb18cb95a3b58ca9f0636a485f83224e31a8bacbe9833",
+      "ownership": "system-tool"
+    }
+  ]
+}

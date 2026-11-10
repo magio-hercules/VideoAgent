@@ -1,0 +1,6 @@
+#!/bin/sh
+# 커밋 전 공개 검사. 설치: git config core.hooksPath .githooks
+PY=python
+command -v "$PY" >/dev/null 2>&1 || PY=py
+command -v "$PY" >/dev/null 2>&1 || PY=python3
+exec "$PY" _infra/public-check/check_public.py --staged

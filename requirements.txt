@@ -1,0 +1,6 @@
+# VideoAgent 공용 도구(_infra/) 파이썬 의존성. 라우터·공개 검사는 표준 라이브러리만 쓴다.
+# 설치: python -m pip install -r requirements.txt
+numpy
+Pillow
+# 선택: assemble.py의 단어 시각 자막(Whisper). 없으면 --words-only 단계를 다른 기계에서 돌린다.
+faster-whisper

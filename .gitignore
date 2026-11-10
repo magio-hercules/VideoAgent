@@ -1,0 +1,74 @@
+# VideoAgent 공개 저장소 — 허용 목록 방식
+# 1) 루트의 모든 것을 막고  2) 공개할 경로만 열고  3) 그 안에서 다시 막는다.
+# 새 폴더를 공개하려면 여기에 !/<폴더>/ 를 추가하고 check_public.py를 통과시킨다.
+
+/*
+
+!/.gitignore
+!/.env.example
+!/.githooks/
+!/.agent-system.json
+!/AGENTS.md
+!/CLAUDE.md
+!/INDEX.md
+!/README.md
+!/requirements.txt
+!/config/
+!/craft/
+!/docs/
+!/library/
+!/_infra/
+!/productions/
+!/private/
+
+# private: 안내문만 공개 (채널 설정·결정·회차·성과·금지 문자열은 비공개)
+/private/*
+!/private/README.md
+
+# productions: 템플릿만 공개 (작품 폴더는 비공개)
+/productions/*
+!/productions/_template/
+
+# library: 워크플로 JSON·동봉 코드는 배포 권리 확인 전까지 제외 (README만 공개)
+/library/workflows/**/original/
+/library/workflows/**/*.json
+
+# 폰트: 파일은 제외하고 받는 곳만 안내
+/_infra/shorts-tools/fonts/*
+!/_infra/shorts-tools/fonts/README.md
+
+# 어디서든 제외
+.env
+.env.*
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.mp4
+*.mov
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.psd
+*.tgz
+*.tar
+*.gz
+*.zip
+*.bin
+*.safetensors
+*.ckpt
+*.ttf
+*.otf
+*.srt
+
+# 마지막에 다시 연다 (위의 .env.* 규칙보다 뒤에 있어야 한다)
+!/.env.example

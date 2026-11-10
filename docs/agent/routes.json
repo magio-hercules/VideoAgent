@@ -1,0 +1,566 @@
+{
+  "schema_version": 1,
+  "limits": {
+    "root_agent_max_bytes": 12288,
+    "initial_route_max_bytes": 81920,
+    "initial_route_warning_ratio": 0.75
+  },
+  "forbidden_default": [
+    "CONTEXT.md",
+    "renders.md",
+    "logs/**",
+    "**/logs/**"
+  ],
+  "representative_tags": {
+    "repo-docs": [
+      "repo-docs"
+    ],
+    "문서구조": [
+      "repo-docs"
+    ],
+    "docs": [
+      "repo-docs"
+    ],
+    "router": [
+      "repo-docs"
+    ],
+    "라우터": [
+      "repo-docs"
+    ],
+    "story-planning": [
+      "story-planning"
+    ],
+    "이야기": [
+      "story-planning"
+    ],
+    "기획": [
+      "story-planning"
+    ],
+    "story": [
+      "story-planning"
+    ],
+    "주제": [
+      "story-planning"
+    ],
+    "대본": [
+      "story-planning"
+    ],
+    "팩트체크": [
+      "story-planning"
+    ],
+    "조사": [
+      "story-planning"
+    ],
+    "prompt-writing": [
+      "prompt-writing"
+    ],
+    "프롬프트": [
+      "prompt-writing"
+    ],
+    "prompt": [
+      "prompt-writing"
+    ],
+    "콘티": [
+      "prompt-writing"
+    ],
+    "local-run": [
+      "local-run"
+    ],
+    "로컬실행": [
+      "local-run"
+    ],
+    "로컬": [
+      "local-run"
+    ],
+    "comfyui": [
+      "local-run"
+    ],
+    "local": [
+      "local-run"
+    ],
+    "점검": [
+      "local-run"
+    ],
+    "paid-generation": [
+      "paid-generation"
+    ],
+    "유료생성": [
+      "paid-generation"
+    ],
+    "유료": [
+      "paid-generation"
+    ],
+    "paid": [
+      "paid-generation"
+    ],
+    "크레딧": [
+      "paid-generation"
+    ],
+    "resume-project": [
+      "resume-project"
+    ],
+    "재개": [
+      "resume-project"
+    ],
+    "이어서": [
+      "resume-project"
+    ],
+    "resume": [
+      "resume-project"
+    ],
+    "review-delivery": [
+      "review-delivery"
+    ],
+    "검수": [
+      "review-delivery"
+    ],
+    "비교": [
+      "review-delivery"
+    ],
+    "납품": [
+      "review-delivery"
+    ],
+    "review": [
+      "review-delivery"
+    ],
+    "조립": [
+      "review-delivery"
+    ],
+    "편집": [
+      "review-delivery"
+    ],
+    "썸네일": [
+      "review-delivery"
+    ],
+    "메타": [
+      "review-delivery"
+    ],
+    "performance": [
+      "performance"
+    ],
+    "성과": [
+      "performance"
+    ],
+    "회고": [
+      "performance"
+    ],
+    "analytics": [
+      "performance"
+    ]
+  },
+  "routes": [
+    {
+      "id": "repo-docs",
+      "description": "문서 구조·라우터·소유권 정리",
+      "match": {
+        "tags": [
+          "repo-docs"
+        ]
+      },
+      "read_order": [
+        "docs/agent/README.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "라우터 정의를 직접 고칠 때",
+          "when": {
+            "tags": [
+              "router",
+              "라우터"
+            ]
+          },
+          "read_order": [
+            "docs/agent/routes.json",
+            "docs/agent/routes.schema.json"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "story-planning",
+      "description": "주제·조사·대본·블록·스타일 기획 (0~6단계)",
+      "match": {
+        "tags": [
+          "story-planning"
+        ]
+      },
+      "read_order": [
+        "craft/doctrine/production-cycle.md",
+        "craft/doctrine/planning.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "쇼츠 제작 표준 (사양·대본·비주얼·자막·소리·판정)",
+          "when": {
+            "tags": [
+              "쇼츠",
+              "shorts"
+            ]
+          },
+          "read_order": [
+            "craft/doctrine/shorts-format.md"
+          ]
+        },
+        {
+          "description": "팩트체크 등급·확신도 표현·권리",
+          "when": {
+            "tags": [
+              "팩트체크",
+              "조사",
+              "권리"
+            ]
+          },
+          "read_order": [
+            "craft/doctrine/factcheck-rights.md"
+          ]
+        },
+        {
+          "description": "기존 작품의 기획",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "BRIEF.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompt-writing",
+      "description": "프롬프트·콘티 작성 (실행·생성 없음)",
+      "match": {
+        "tags": [
+          "prompt-writing"
+        ]
+      },
+      "read_order": [
+        "library/prompts/README.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "모델별 문법 색인",
+          "when": {
+            "tags": [
+              "모델문법",
+              "playbook"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/README.md"
+          ]
+        },
+        {
+          "description": "MiniMax H3 R2V 문법과 클립 골격",
+          "when": {
+            "tags": [
+              "h3",
+              "r2v"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/minimax-h3-r2v.md",
+            "library/prompts/minimax-h3/r2v-block-skeleton.md"
+          ]
+        },
+        {
+          "description": "MiniMax H3 I2V 터보 특성",
+          "when": {
+            "tags": [
+              "i2v",
+              "터보"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/minimax-h3-i2v-turbo.md"
+          ]
+        },
+        {
+          "description": "Z-Image Turbo 정지 컷 문법",
+          "when": {
+            "tags": [
+              "zimage",
+              "레퍼런스",
+              "정지컷"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/z-image-turbo.md"
+          ]
+        },
+        {
+          "description": "GPT 이미지 (스타일 시안·대표 그림·썸네일 바탕)",
+          "when": {
+            "tags": [
+              "gpt",
+              "대표그림",
+              "스타일비교",
+              "이미지"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/gpt-image.md"
+          ]
+        },
+        {
+          "description": "쇼츠 제작 표준 (사양·대본·비주얼·자막·소리·판정)",
+          "when": {
+            "tags": [
+              "쇼츠",
+              "shorts"
+            ]
+          },
+          "read_order": [
+            "craft/doctrine/shorts-format.md"
+          ]
+        },
+        {
+          "description": "작품의 기획",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "BRIEF.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local-run",
+      "description": "로컬 생성 도구(ComfyUI) 점검·실행·전송",
+      "match": {
+        "tags": [
+          "local-run"
+        ]
+      },
+      "read_order": [
+        "docs/runbooks/local-generation.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "워크플로 색인",
+          "when": {
+            "tags": [
+              "workflow",
+              "워크플로",
+              "comfyui"
+            ]
+          },
+          "read_order": [
+            "library/workflows/README.md"
+          ]
+        },
+        {
+          "description": "H3 R2V SpeedX6 워크플로 설정",
+          "when": {
+            "tags": [
+              "h3",
+              "r2v"
+            ]
+          },
+          "read_order": [
+            "library/workflows/h3-r2v-speedx6/README.md"
+          ]
+        },
+        {
+          "description": "H3 I2V 터보 특성",
+          "when": {
+            "tags": [
+              "i2v",
+              "터보"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/minimax-h3-i2v-turbo.md"
+          ]
+        },
+        {
+          "description": "Z-Image Turbo 워크플로 설정",
+          "when": {
+            "tags": [
+              "zimage",
+              "레퍼런스",
+              "정지컷"
+            ]
+          },
+          "read_order": [
+            "library/workflows/still-zimage-turbo/README.md"
+          ]
+        },
+        {
+          "description": "작품의 현재 진행점",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "생성상태.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "paid-generation",
+      "description": "유료 생성(이미지·나레이션) 승인·실행 (비용 승인 필요)",
+      "match": {
+        "tags": [
+          "paid-generation"
+        ]
+      },
+      "read_order": [
+        "docs/runbooks/paid-generation.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "GPT 이미지 (스타일 시안·대표 그림·썸네일 바탕)",
+          "when": {
+            "tags": [
+              "gpt",
+              "대표그림",
+              "스타일비교",
+              "이미지"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/gpt-image.md"
+          ]
+        },
+        {
+          "description": "후반 작업 요령 (나레이션·받아쓰기·조립·BGM)",
+          "when": {
+            "tags": [
+              "조립",
+              "편집",
+              "나레이션",
+              "자막",
+              "bgm"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/post-production.md"
+          ]
+        },
+        {
+          "description": "작품의 현재 진행점",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "생성상태.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resume-project",
+      "description": "지목한 작품을 이어서 진행",
+      "match": {
+        "tags": [
+          "resume-project"
+        ]
+      },
+      "read_order": [],
+      "conditional_docs": [
+        {
+          "description": "지목한 작품의 가까운 상태 문서와 기획",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "생성상태.md",
+            "BRIEF.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review-delivery",
+      "description": "검수·조립·독립 평가·썸네일·메타·납품",
+      "match": {
+        "tags": [
+          "review-delivery"
+        ]
+      },
+      "read_order": [
+        "docs/runbooks/review-delivery.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "후반 작업 요령 (나레이션·받아쓰기·조립·BGM)",
+          "when": {
+            "tags": [
+              "조립",
+              "편집",
+              "나레이션",
+              "자막",
+              "bgm"
+            ]
+          },
+          "read_order": [
+            "craft/playbooks/post-production.md"
+          ]
+        },
+        {
+          "description": "판정 기준·썸네일·업로드 정보 기준",
+          "when": {
+            "tags": [
+              "쇼츠",
+              "shorts",
+              "썸네일",
+              "메타",
+              "판정"
+            ]
+          },
+          "read_order": [
+            "craft/doctrine/shorts-format.md"
+          ]
+        },
+        {
+          "description": "작품별 생성 결과와 현재 진행점",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "renders.md",
+            "생성상태.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "description": "공개 후 성과 기록·회고 (방법은 비공개 private/analytics.md)",
+      "match": {
+        "tags": [
+          "performance"
+        ]
+      },
+      "read_order": [
+        "private/README.md"
+      ],
+      "conditional_docs": [
+        {
+          "description": "작품의 결과·성과 기록",
+          "when": {
+            "path_globs": [
+              "productions/**"
+            ]
+          },
+          "nearest": [
+            "renders.md"
+          ]
+        }
+      ]
+    }
+  ]
+}
