@@ -18,6 +18,7 @@
 | `private/` 나머지 | 채널 설정·운영자 결정·회차 목록·성과 분석 방법·금지 문자열 | **비공개** |
 | `docs/agent/` | 문서 라우터: 소유권 표, 라우트 표, routes.json, 스키마 | 공개 |
 | `docs/runbooks/` | 점검·실행·전송·복구, 유료 생성, 검수·조립·납품 | 공개 |
+| `docs/design/` | 아직 만들지 않은 기능의 설계 (웹 화면) | 공개 |
 | `craft/doctrine/` | 단계·기획·제작 표준·팩트체크 | 공개 |
 | `craft/playbooks/` | 모델·작업별 문법과 반복 실패 대응 | 공개 |
 | `library/prompts/` | 재사용 프롬프트 골격과 모델 색인 | 공개 |
@@ -25,6 +26,8 @@
 | `productions/_template/` | 새 작품 양식: BRIEF·생성상태·renders | 공개 |
 | `productions/<종류>/<작품>/` | 작품별 기획·기록·생성물 | **비공개** |
 | `_infra/doc-router/` | 읽기 전용 문서 라우터와 테스트 | 공개 |
+| `_infra/episode-state/` | 에피소드 기계용 상태 블록 형식·검사·목록 도구와 테스트 | 공개 |
+| `_infra/codex-imagegen/` | Codex CLI 내장 이미지 생성으로 그림을 만들어 작품 폴더에 저장하는 도구와 테스트 | 공개 |
 | `_infra/shorts-tools/` | jobgen·assemble·clip_qc·bgm_synth (폰트 파일은 비공개) | 공개 |
 | `_infra/public-check/` | 공개 검사 스크립트 | 공개 |
 | `_scratch/` | 임시·실험 파일 | **비공개** |

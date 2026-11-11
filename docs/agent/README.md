@@ -23,11 +23,11 @@ python -m unittest discover -s _infra/doc-router/tests
 | 라우트 | 요청 예 | 대표 태그 | 기본 문서 | 조건부 문서 |
 |---|---|---|---|---|
 | repo-docs | 문서 구조를 고쳐 | 문서구조, docs | docs/agent/README.md | +라우터 → routes.json, routes.schema.json |
-| story-planning | 새 편 주제·대본을 정하자 | 기획, 주제, 대본, 팩트체크, 조사 | craft/doctrine/production-cycle.md, craft/doctrine/planning.md | +쇼츠 → shorts-format.md · +팩트체크/조사/권리 → factcheck-rights.md · 작품 경로 → 가까운 BRIEF.md |
+| story-planning | 새 편 주제·대본을 정하자 | 기획, 주제, 대본, 팩트체크, 조사 | craft/doctrine/production-cycle.md, craft/doctrine/planning.md | +쇼츠 → shorts-format.md · +팩트체크/조사/권리 → factcheck-rights.md · 작품 경로 → 가까운 생성상태.md → BRIEF.md |
 | prompt-writing | 콘티·클립 프롬프트만 작성해 | 프롬프트, 콘티 | library/prompts/README.md | +모델문법 → playbooks/README.md · +h3/r2v → minimax-h3-r2v.md, r2v-block-skeleton.md · +i2v → minimax-h3-i2v-turbo.md · +zimage → z-image-turbo.md · +gpt/대표그림 → gpt-image.md · +쇼츠 → shorts-format.md · 작품 경로 → BRIEF.md |
 | local-run | 로컬에서 실행해 / 에이전트 점검 | 로컬실행, comfyui, 점검 | docs/runbooks/local-generation.md | +워크플로/comfyui → workflows/README.md · +h3/r2v → h3-r2v-speedx6/README.md · +i2v → minimax-h3-i2v-turbo.md · +zimage → still-zimage-turbo/README.md · 작품 경로 → 생성상태.md |
 | paid-generation | 대표 그림·나레이션을 만들어 | 유료생성, 크레딧 | docs/runbooks/paid-generation.md | +gpt/대표그림 → gpt-image.md · +나레이션 → post-production.md · 작품 경로 → 생성상태.md |
-| resume-project | 이 작품 이어서 하자 | 재개, 이어서 | (없음) | 지목한 작품의 가까운 생성상태.md → BRIEF.md |
+| resume-project | 이 작품 이어서 하자 / 인계 받아 | 재개, 이어서, 인계 | (없음) | +인계/상태 → production-cycle.md, _infra/episode-state/README.md · 지목한 작품의 가까운 생성상태.md → BRIEF.md |
 | review-delivery | 조립·검수·썸네일·납품 | 검수, 조립, 편집, 썸네일, 메타, 납품 | docs/runbooks/review-delivery.md | +조립/나레이션/자막 → post-production.md · +쇼츠/썸네일/메타/판정 → shorts-format.md · 작품 경로 → renders.md → 생성상태.md |
 | performance | 성과 기록·회고 | 성과, 회고 | private/README.md (→ 비공개 `private/analytics.md`를 이어서 읽음) | 작품 경로 → 가까운 renders.md |
 
@@ -43,7 +43,7 @@ python -m unittest discover -s _infra/doc-router/tests
 |---|---|
 | 모든 작업에 필요한 안전·권위·보존·공개 경계·라우팅 | `AGENTS.md` |
 | 처음 받은 사람의 설치·설정 | `docs/setup.md` |
-| 한 편의 단계·승인 지점·납품 기준 | `craft/doctrine/production-cycle.md` |
+| 한 편의 단계·작업 분담(ChatGPT → Claude 인계)·승인 지점·납품 기준 | `craft/doctrine/production-cycle.md` |
 | 0~6단계 실행 방법 | `craft/doctrine/planning.md` |
 | 사양·연출·자막·소리·썸네일·메타·판정 기준 | `craft/doctrine/shorts-format.md` |
 | 팩트체크·권리·정정 | `craft/doctrine/factcheck-rights.md` |
@@ -52,8 +52,11 @@ python -m unittest discover -s _infra/doc-router/tests
 | 정확한 워크플로 설정 | `library/workflows/{워크플로}/README.md` |
 | 프롬프트 파일 규칙과 모델 색인 | `library/prompts/README.md` |
 | 점검·실행·전송·복구 절차 | `docs/runbooks/` |
+| 에피소드 기계용 상태 블록의 형식과 검사 | `_infra/episode-state/README.md` |
+| Codex 이미지 생성 도구의 조건·사용법 | `_infra/codex-imagegen/README.md` |
+| 웹 화면 설계(계획) | `docs/design/web-console.md` |
 | 작품의 기획 | `productions/{종류}/{작품}/BRIEF.md` |
-| 현재 진행점·채택판·다음 행동 | `productions/{종류}/{작품}/생성상태.md` |
+| 현재 단계·담당·인계 상태(기계용 상태 블록)·채택판·다음 행동 | `productions/{종류}/{작품}/생성상태.md` |
 | 작품별 생성 결과·판정·성과 | `productions/{종류}/{작품}/renders.md` |
 | 작업 종류별 읽기 순서 | `docs/agent/routes.json` |
 | 채널 고유 값 (비공개) | `private/channel.md` (기본값: `config/channel.example.md`) |

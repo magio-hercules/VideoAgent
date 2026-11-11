@@ -8,9 +8,9 @@
 
 | 단계 | 준비할 것 | 이걸 하면 되는 일 |
 |---|---|---|
-| 1 | 에이전트 도구, Python | 문서 라우터, 기획·대본·팩트체크(0~3단계) |
+| 1 | 에이전트 도구(Codex·Claude Code), Python | 문서 라우터, 기획·대본·팩트체크(0~3단계), 상태 블록 검사 |
 | 2 | `.env`, `private/` | 내 채널 기준으로 동작, 공개 검사 |
-| 3 | 힉스필드·Google Drive 연결 | 스타일 시안·대표 그림·나레이션(4~6단계), 에피소드 저장 |
+| 3 | ChatGPT 이미지 생성, 힉스필드·Google Drive 연결 | 스타일 시안·대표 그림·썸네일 바탕(4~5·9단계, Codex 이미지 생성), 나레이션(힉스필드), 에피소드 저장 |
 | 4 | ffmpeg, 파이썬 패키지, 폰트 | 클립 검사·조립·배경음악 합성(8단계) |
 | 5 | ComfyUI, 모델, 워크플로 JSON, comfy-mcp | 로컬 클립 생성(7단계) |
 
@@ -18,7 +18,9 @@
 
 ## 1. 에이전트 도구와 Python
 
-- **에이전트:** Claude Code 또는 Codex. 저장소 폴더를 열면 `AGENTS.md`(Claude는 `CLAUDE.md` → `AGENTS.md`)를 먼저 읽는다.
+- **에이전트:** 기획(0~5단계)은 Codex CLI, 제작(6단계~)은 Claude Code(→ `craft/doctrine/production-cycle.md` §1). 저장소 폴더를 열면 `AGENTS.md`(Claude는 `CLAUDE.md` → `AGENTS.md`)를 먼저 읽는다.
+- **Codex 로그인:** ChatGPT 계정으로 로그인한다(`codex login`, 확인: `codex login status`가 "Logged in using ChatGPT"). 로그인은 운영자가 직접 한다.
+- **Codex 버전:** 최근 버전이어야 한다. 오래된 CLI는 계정 기본 모델을 못 써서 "requires a newer version" 오류로 멈춘다. Codex 데스크톱 앱이 있으면 앱에 들어 있는 CLI가 최신이다. `python _infra/codex-imagegen/codex_imagegen.py --check`로 설치된 Codex들의 버전을 볼 수 있다. CLI 업데이트는 운영자 승인 후 한다.
 - **Python 3.10 이상.** Windows에서 `python`이 없으면 `py`를 쓴다.
 
 ```bash
@@ -26,9 +28,11 @@ git clone https://github.com/<계정>/<저장소>.git
 cd <저장소>
 python _infra/doc-router/router.py --check
 python -m unittest discover -s _infra/doc-router/tests
+python -m unittest discover -s _infra/episode-state/tests
+python -m unittest discover -s _infra/codex-imagegen/tests
 ```
 
-두 명령이 통과하면 에이전트가 요청에 맞는 문서를 고를 수 있다.
+세 명령이 통과하면 에이전트가 요청에 맞는 문서를 고르고, 작품 상태 블록을 검사할 수 있다.
 
 ### 실행 환경에 따라 다른 점
 
@@ -62,7 +66,8 @@ git config core.hooksPath .githooks               # 커밋 전 공개 검사 훅
 
 | 서비스 | 용도 | 연결 방법 | 비용 |
 |---|---|---|---|
-| 힉스필드 (Higgsfield) MCP | GPT 이미지(`gpt_image_2_6`), 나레이션(`elevenlabs_v4`) | Claude 앱이면 커넥터에서 로그인. Claude Code·Codex면 각 도구의 MCP 서버 설정에 힉스필드 MCP를 추가 | 크레딧. 생성마다 에이전트가 견적을 먼저 보이고 승인을 받는다 |
+| ChatGPT 이미지 생성 | 스타일 시안·대표 그림(4~5단계), 썸네일 바탕(9단계) | Codex CLI 내장 `image_gen`. 최근 Codex가 필요하다 — Codex 데스크톱 앱에 들어 있는 CLI를 도구가 자동으로 찾는다. 확인: `python _infra/codex-imagegen/codex_imagegen.py --check` (→ `_infra/codex-imagegen/README.md`) | ChatGPT 요금제 사용량. 생성 전에 장수를 알리고 승인을 받는다 |
+| 힉스필드 (Higgsfield) MCP | 나레이션(`elevenlabs_v4`), 대표가 지시할 때의 그림(`gpt_image_2_6`) | Claude 앱이면 커넥터에서 로그인. Claude Code면 MCP 서버 설정에 힉스필드 MCP를 추가 | 크레딧. 생성마다 에이전트가 견적을 먼저 보이고 승인을 받는다 |
 | Google Drive | 에피소드 정본 저장소 (편별 폴더) | Claude 앱이면 커넥터에서 로그인. 대신 Drive 데스크톱의 동기화 폴더를 써도 된다 | 무료 |
 
 - 저장소 루트 폴더 이름(예: `MyChannel/`)을 `private/channel.md`의 "에피소드 저장소 루트"에 적는다. 하위 폴더 구조는 `docs/runbooks/local-generation.md` §3.

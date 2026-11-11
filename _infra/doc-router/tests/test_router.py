@@ -14,6 +14,7 @@ TEMPLATE = "productions/_template"
 CYCLE = "craft/doctrine/production-cycle.md"
 PLANNING = "craft/doctrine/planning.md"
 FORMAT = "craft/doctrine/shorts-format.md"
+STATE_DOC = "_infra/episode-state/README.md"
 
 
 class RouterTests(unittest.TestCase):
@@ -58,6 +59,19 @@ class RouterTests(unittest.TestCase):
     def test_resume_nearest_order(self):
         _, p = self.paths("재개", TEMPLATE)
         self.assertEqual(p, [f"{TEMPLATE}/생성상태.md", f"{TEMPLATE}/BRIEF.md"])
+
+    def test_story_with_path_reads_state_first(self):
+        _, p = self.paths("기획", TEMPLATE)
+        self.assertEqual(p, [CYCLE, PLANNING, f"{TEMPLATE}/생성상태.md", f"{TEMPLATE}/BRIEF.md"])
+
+    def test_handoff(self):
+        res, p = self.paths("인계", TEMPLATE)
+        self.assertEqual(res["routes"], ["resume-project"])
+        self.assertEqual(p, [CYCLE, STATE_DOC, f"{TEMPLATE}/생성상태.md", f"{TEMPLATE}/BRIEF.md"])
+
+    def test_resume_with_state_modifier(self):
+        _, p = self.paths("이어서 상태", TEMPLATE)
+        self.assertEqual(p, [CYCLE, STATE_DOC, f"{TEMPLATE}/생성상태.md", f"{TEMPLATE}/BRIEF.md"])
 
     def test_resume_without_path_asks(self):
         res, p = self.paths("재개")

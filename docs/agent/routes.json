@@ -108,6 +108,12 @@
     "resume": [
       "resume-project"
     ],
+    "인계": [
+      "resume-project"
+    ],
+    "handoff": [
+      "resume-project"
+    ],
     "review-delivery": [
       "review-delivery"
     ],
@@ -215,13 +221,14 @@
           ]
         },
         {
-          "description": "기존 작품의 기획",
+          "description": "기존 작품의 상태 블록과 기획",
           "when": {
             "path_globs": [
               "productions/**"
             ]
           },
           "nearest": [
+            "생성상태.md",
             "BRIEF.md"
           ]
         }
@@ -459,7 +466,7 @@
     },
     {
       "id": "resume-project",
-      "description": "지목한 작품을 이어서 진행",
+      "description": "지목한 작품을 이어서 진행 (ChatGPT → Claude 인계 포함)",
       "match": {
         "tags": [
           "resume-project"
@@ -467,6 +474,20 @@
       },
       "read_order": [],
       "conditional_docs": [
+        {
+          "description": "ChatGPT → Claude 인계 규칙과 상태 블록 형식",
+          "when": {
+            "tags": [
+              "인계",
+              "handoff",
+              "상태"
+            ]
+          },
+          "read_order": [
+            "craft/doctrine/production-cycle.md",
+            "_infra/episode-state/README.md"
+          ]
+        },
         {
           "description": "지목한 작품의 가까운 상태 문서와 기획",
           "when": {
