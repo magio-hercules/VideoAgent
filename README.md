@@ -37,12 +37,13 @@
 
 ### 지금 되는 것
 
-- **기획 0~5단계** — 지금까지는 Claude 프로젝트 채팅에서 운영했습니다. 2026-11-11부터 Codex(ChatGPT 계정 로그인)가 이 폴더에서 0~5단계를 하고, 인계 체크리스트를 채워 Claude에게 넘기는 규칙을 씁니다(`craft/doctrine/production-cycle.md` §1). 이 방식으로 끝까지 만든 편은 아직 없습니다.
+- **기획 0~5단계** — 지금까지는 Claude 프로젝트 채팅에서 운영했습니다. 2026-11-11부터 Codex(ChatGPT 계정 로그인)가 이 폴더에서 0~5단계를 하고, 인계 체크리스트를 채워 Claude에게 넘기는 규칙을 씁니다(`craft/doctrine/production-cycle.md` §1). 2026-11-15 첫 인계(Codex 기획 → 인계 검사 통과 → Claude 접수)를 마쳤습니다.
 - **에피소드 상태 블록** — 작품 `생성상태.md` 맨 위 JSON 블록에 단계·담당·인계 상태·버전을 남기고, `episode_state.py`로 형식·인계 조건을 검사하고 전체 목록을 뽑습니다(`_infra/episode-state/`).
 - **그림 생성 (Codex)** — 스타일 시안·대표 그림·썸네일 바탕을 Codex CLI 내장 이미지 생성(ChatGPT 계정)으로 만듭니다. `codex_imagegen.py`가 최신 Codex를 찾아 생성하고 작품 폴더의 정해진 파일명으로 저장합니다(`_infra/codex-imagegen/`, `craft/playbooks/gpt-image.md`). 2026-11-11 시험 생성 2장으로 확인했습니다.
 - **유료 생성 연결** — 힉스필드 MCP로 Eleven v4 나레이션. 견적 → 승인 → 생성 절차(`docs/runbooks/paid-generation.md`).
 - **로컬 클립 생성** — 운영자 PC의 ComfyUI(MiniMax H3 R2V SpeedX6·I2V 터보, Z-Image Turbo, ACE-Step 1.5)를 comfy-mcp로 제어. `jobgen.py`가 워크플로 사본에 값만 넣어 작업 JSON을 만듭니다.
 - **조립·검사 도구** — `assemble.py`(Whisper 단어 시각 자막, 숫자 카드, 잉크 마크, 보드 톤 보정, 음량·길이 QC), `clip_qc.py`(컷 수·앞쪽 정지·색 이탈 + 접촉 시트), `bgm_synth.py`.
+- **제작 보드** — claude.ai 비공개 아티팩트에서 편별 0~11단계 진행, 대표 확인 대기, 제작 이력을 보고 에이전트에게 요청을 남깁니다. 보드를 지켜보는 Claude 세션이 있으면 요청이 바로 전달됩니다(`_infra/board-sync/`, `docs/design/web-console.md`). 2026-11-13 시험 운영 시작.
 - **문서 라우터** — 요청 태그로 읽을 문서만 고르는 읽기 전용 선택기와 모의시험 28건(`_infra/doc-router/`).
 - **공개 경계** — 비밀 값은 `.env`, 채널 정보는 `private/`(둘 다 Git 제외), 허용 목록 `.gitignore`, 커밋 전 검사(`_infra/public-check/`).
 
@@ -53,7 +54,7 @@
 - **클론만으로 재현** — 워크플로 JSON과 동봉 노드 코드, 폰트 파일은 배포 권리를 확인하지 못해 넣지 않았습니다. 받는 곳은 각 README에 있습니다. 작품 예시도 넣지 않았습니다.
 - **`.env` 자동 읽기** — 지금은 코드가 아니라 에이전트가 `.env`를 읽어 생성 요청에 넣습니다. 스크립트에서 직접 읽는 부분은 아직 없습니다.
 - **성과 자동 수집** — YouTube Studio를 읽지 못해 운영자가 캡처·CSV를 전달합니다.
-- **어디서나 쓰는 웹 화면** — 설계만 있습니다(`docs/design/web-console.md`): claude.ai 아티팩트에서 주제 후보·회차 목록·편별 상태를 보고, 승인·메모를 남기면 PC의 에이전트가 이어받는 방식입니다.
+- **제작 보드의 이미지 검토·주제 추천** — 보드는 진행·이력·요청까지 있습니다. 대표 그림 미리보기와 주제 추천·시작 버튼은 다음 단계입니다(`docs/design/web-console.md` §5).
 - **다른 언어판** — 진행 방식 미정.
 - **게시 자동화** — 의도적으로 만들지 않습니다. 게시는 운영자가 직접 합니다.
 
@@ -120,6 +121,7 @@ python _infra/doc-router/router.py --check             # 문서 구조 검사
 python -m unittest discover -s _infra/doc-router/tests # 라우터 모의시험
 python -m unittest discover -s _infra/episode-state/tests # 상태 블록 검사 시험
 python -m unittest discover -s _infra/codex-imagegen/tests # 그림 생성 도구 시험 (생성 안 함)
+python -m unittest discover -s _infra/board-sync/tests # 제작 보드 동기화 시험
 python _infra/public-check/check_public.py             # 공개 검사 (커밋·Push 전)
 ```
 
@@ -157,13 +159,13 @@ python _infra/doc-router/router.py --tags "재개" --path "productions/shorts/EP
   ├ ChatGPT 이미지 생성         handoff_ready              ├ comfy-mcp → ComfyUI (클립·정지 컷·BGM)
   └ BRIEF.md·대표 그림 저장     ◀── returned (되돌림)      └ 조립·검수·납품 → Google Drive (에피소드 정본)
 
- 웹 화면 (claude.ai 아티팩트, 설계만) ── 주제 후보·회차 목록·상태 보기, 승인·메모 남기기 ──▶ 다음 PC 세션이 반영
+ 제작 보드 (claude.ai 아티팩트) ── 단계 진행·이력 보기, 요청 남기기 ──▶ 지켜보는 Claude 세션이 바로, 아니면 다음 PC 세션이 반영
 
 운영자 PC (이 저장소)
  ├ AGENTS.md / CLAUDE.md          공통 규칙·진입
  ├ craft/doctrine/                단계·작업 분담·기획·제작 표준·팩트체크
  ├ craft/playbooks/               모델별 문법과 실패 대응
- ├ docs/runbooks/ · docs/design/  점검·실행·전송·검수·납품 절차 / 웹 화면 설계
+ ├ docs/runbooks/ · docs/design/  점검·실행·전송·검수·납품 절차 / 제작 보드 규칙
  ├ docs/agent/ + _infra/doc-router/   문서 라우터
  ├ library/                       프롬프트 골격·워크플로 설정
  ├ _infra/episode-state/          상태 블록 검사·목록

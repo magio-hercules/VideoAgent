@@ -23,17 +23,18 @@
 |---|---|---|
 | 기획 — Codex (ChatGPT 계정 로그인, 이 폴더) | 0~5단계: 주제·조사·대본·블록·스타일 시안·대표 그림·콘티·프롬프트 (= 정적 제작 패키지), 메타 초안 | Codex 웹 검색, ChatGPT 이미지 생성(`craft/playbooks/gpt-image.md`), 작품 폴더 |
 | 기획 — 어디서나 (웹 화면) | 주제 후보·회차 목록·상태 확인 | claude.ai 아티팩트 — **설계만 있음**(`docs/design/web-console.md`) |
-| 제작 — Claude (Claude Code, 운영자 PC) | 6~9단계: 나레이션, 시험 클립, 클립 생성, 조립·검수, 썸네일·납품 | comfy-mcp, 힉스필드 MCP, Codex 이미지 생성 도구, PC 셸 (`docs/runbooks/local-generation.md`) |
-| 유료 생성 (힉스필드) | 나레이션 | 크레딧 사용 — 매번 승인 (`docs/runbooks/paid-generation.md`) |
+| 제작 — Claude (Claude Code, 운영자 PC) | 6~7단계: 나레이션, 시험 클립, 클립 생성 | comfy-mcp, 힉스필드 MCP, PC 셸 (`docs/runbooks/local-generation.md`) |
+| 나레이션 — 힉스필드 MCP | 6단계 나레이션 한 테이크(`elevenlabs_v4` + 운영자 보이스) | 크레딧 사용 — 매번 견적·승인 (`docs/runbooks/paid-generation.md` §4) |
 | 그림 생성 (Codex) | 스타일 시안·대표 그림(4~5), 썸네일 바탕(9) | ChatGPT 요금제 사용량 — 장수를 알리고 승인 (`craft/playbooks/gpt-image.md`) |
+| 편집·마무리 — **Claude가 직접** (Claude Code, 운영자 PC) | 8~9단계: 나레이션 분할·받아쓰기, 배경음악, 조립(편집 줌·자막·그래픽·믹스), QC, 독립 평가, 썸네일 글자 합성, 업로드 메타, 납품 | PC 셸의 ffmpeg·Python·Whisper(`docs/setup.md` §4), `docs/runbooks/review-delivery.md` |
 | 에피소드 정본 저장소 (Google Drive) | 편별 폴더: 기획 사본, 대표 그림, 최종본, 썸네일, 업로드 메타 | Drive 커넥터, PC 동기화 폴더 |
-| 클라우드 작업 공간 | 나레이션 분할, 조립(편집 줌·자막·그래픽·믹스), QC, 썸네일 글자 합성 | ffmpeg, faster-whisper, Python |
 
 - **편별 기획·상태의 정본은 작품 폴더다.** 지금 단계·담당·인계 상태는 `생성상태.md` 맨 위 기계용 상태 블록이 소유한다(형식: `_infra/episode-state/README.md`). 어느 쪽이든 작업을 시작하면 그 블록부터 읽고, 끝나면 고친다.
 - **6단계 이후(영상 제작)는 PC에서 ComfyUI를 쓸 수 있을 때만 시작한다.** Claude는 이어받을 때 `docs/runbooks/local-generation.md` §1 점검을 먼저 한다. 쓸 수 없으면 상태를 `waiting_pc`로 두고 멈춘다. 그동안 ChatGPT 쪽은 다른 편의 0~5단계를 진행할 수 있다.
 - 다른 기획 공간(Claude 프로젝트 채팅 등)에서 기획해도 결과는 같은 작품 폴더와 상태 블록에 같은 형식으로 남긴다.
 - 그림·영상 파일의 정본은 에피소드 저장소다. ChatGPT가 만든 그림은 먼저 작품 폴더에 저장하고 인계 뒤 Claude가 올린다. ComfyUI 중간물은 PC에 두고 채택본과 최종본만 올린다.
-- 클라우드 작업 공간은 세션이 바뀌면 사라질 수 있다. 조립·검사 스크립트는 편마다 tgz로 묶어 에피소드 폴더에 남긴다.
+- **편집·마무리(8~9단계)는 Claude가 직접 한다.** 다른 에이전트·클라우드 작업 공간·외부 편집 도구로 넘기지 않고, 운영자 PC의 작품 폴더에서 조립·검수·납품까지 끝낸다(2026-11-11 대표 결정). 오래 걸리는 렌더는 백그라운드로 돌린다.
+- 조립·검사 스크립트는 편마다 tgz로 묶어 에피소드 폴더에 남긴다.
 
 ### ChatGPT → Claude 인계 (5단계 → 6단계)
 
@@ -72,12 +73,12 @@
 | 1 | 주제 발굴 | ChatGPT | 후보 비교표, 브리프, 작품 폴더·상태 블록 생성 | **주제 선택** | planning §1 |
 | 2 | 조사·팩트체크 | ChatGPT | 주장별 팩트체크(F01~), 자료 목록 | — | planning §2, factcheck-rights |
 | 3 | 대본 | ChatGPT | 대본 vNN(발화용·화면용), 예상 길이, 평가 | **대본 승인** | planning §3, shorts-format §2 |
-| 4 | 블록·스타일 | ChatGPT | 블록표, 같은 블록 3~5화풍 동시 생성·비교, 스타일 기준 | **생성 승인 → 스타일 선택** | planning §4, shorts-format §3 |
-| 5 | 대표 그림·콘티·프롬프트 | ChatGPT → 인계 | 블록별 대표 그림, 콘티·시나리오, 클립 프롬프트, 타임라인 가안 (= 정적 제작 패키지), 인계 | **생성 승인 → 그림 승인** | planning §5, 위 §1 인계 |
+| 4 | 블록·스타일 (4~5는 한 흐름) | ChatGPT | 블록표, 블록 하나를 3~5화풍으로 시안 생성·비교, 스타일 기준 | **시안 생성 승인 → 스타일 선택** (선택이 곧 나머지 블록 그림 생성 승인) | planning §4, shorts-format §3 |
+| 5 | 대표 그림·콘티·프롬프트 | ChatGPT → 인계 | 스타일 선택에 이어 따로 묻지 않고: 나머지 블록 대표 그림, 콘티·시나리오, 클립 프롬프트, 타임라인 가안 (= 정적 제작 패키지), 인계 | **그림 승인** | planning §5, 위 §1 인계 |
 | 6 | 음성·판정 기준·시험 | Claude (PC) | 나레이션 한 테이크, 실측 타임라인, 이 편 판정 기준, 시험 클립 1~2개 | **나레이션 크레딧 승인** | planning §6, shorts-format §5·§10 |
 | 7 | 클립 생성 | Claude (PC) | 채택 클립, 렌더 기록 | — | local-generation, playbooks |
-| 8 | 편집·검수 | Claude | 배경음악·효과음, 조립, 자동 QC, 독립 평가, 수정본 | 시사본 확인 | review-delivery, post-production |
-| 9 | 썸네일·메타·납품 | Claude | 썸네일 4종 + 비교 시트, 업로드 메타, 납품(md5 확인), 제작기록 | **썸네일·제목 선택** | shorts-format §8·§9, review-delivery |
+| 8 | 편집·검수 | Claude 직접 (PC) | 배경음악·효과음, 조립, 자동 QC, 독립 평가, 수정본 | 시사본 확인 | review-delivery, post-production |
+| 9 | 썸네일·메타·납품 | Claude 직접 (PC) | 썸네일 4종 + 비교 시트, 업로드 메타, 납품(md5 확인), 제작기록 | **썸네일·제목 선택** | shorts-format §8·§9, review-delivery |
 | 10 | 공개 | 대표 | 게시 기록 | **직접 게시 후 URL·시각 알려 주기** | factcheck-rights §6 |
 | 11 | 성과·회고 | Claude | 성과 기록, 다음 실험 1개, 회차 목록 갱신 | **Studio 캡처·CSV 전달** (24시간·7일·28일) | private/analytics.md |
 

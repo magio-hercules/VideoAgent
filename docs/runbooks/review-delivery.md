@@ -3,6 +3,9 @@
 이 문서는 생성 결과의 **검수, 쇼츠 조립, 독립 평가, 썸네일·메타, 납품 절차**를 소유한다.
 기준값은 `craft/doctrine/shorts-format.md`, 반복 실패 대응은 `craft/playbooks/post-production.md`.
 
+**실행 위치:** 8~9단계(편집·마무리)는 Claude가 운영자 PC에서 직접 한다(작업 분담 → `craft/doctrine/production-cycle.md` §1).
+아래 명령은 모두 PC 터미널에서, 작업 폴더 루트 기준으로 실행한다. 필요한 도구(ffmpeg·ffprobe·Python 패키지·Whisper 모델)는 `docs/setup.md` §4.
+
 ## 1. 검수
 
 1. 대상 작품의 `renders.md`에서 비교할 결과를 고른다.
@@ -13,7 +16,7 @@
 
 ## 2. 클립 자동 검사
 
-`device_bash`에서 `python3 _infra/shorts-tools/clip_qc.py <clip.mp4> --expect-cuts <샷 수-1>`을 실행한다.
+PC 터미널에서 `python _infra/shorts-tools/clip_qc.py <clip.mp4> --expect-cuts <샷 수-1>`을 실행한다(ffprobe 필요).
 - 수치 검사: 길이·fps·오디오, 컷 수, 앞쪽 정지, 색 이탈.
 - 사람이 보는 검사: 모핑·두 번째 개체·글자 생성은 함께 만들어지는 `_qc.jpg` 시트를 보고 판정한다.
 
@@ -23,8 +26,8 @@
 편별 조립 스크립트를 두어도 된다(공용 도구와 같은 QC 기준을 지킨다).
 
 1. 작품 폴더의 매니페스트 생성기(예: `make_assemble.py`)로 `assemble_<판>.json`을 만든다. 샷 경계·잉크 마크·숫자 카드 시각은 대본 문구(`at`)로 적는다.
-2. Whisper 캐시: `python3 _infra/shorts-tools/assemble.py <매니페스트> --words-only` (PC 셸, 1분 안팎).
-3. 렌더: 같은 명령을 `--words-only` 없이 실행한다. 1080×1920 약 90초에 6분 정도 걸리므로 명령당 3분 제한이 있는 PC 셸이 아니라 클라우드 작업 공간에서 돌리고, 결과만 PC로 옮긴다. 빠른 확인은 `--preview`(540×960).
+2. Whisper 캐시: `python _infra/shorts-tools/assemble.py <매니페스트> --words-only` (1분 안팎).
+3. 렌더: 같은 명령을 `--words-only` 없이 실행한다. 1080×1920 약 90초에 6분 정도 걸리므로 Claude가 PC에서 백그라운드로 돌리고 끝나면 결과를 연다. 빠른 확인은 `--preview`(540×960).
 4. 출력이 `QC PASS`여야 한다(길이 ±0.05초, −16±1 LUFS, 트루피크 −1 dBFS 이하). 경고에 "비례 배치"가 있으면 납품하지 않는다.
 5. `_review.jpg`(샷마다 한 장)로 자막 위치·카드 겹침·안전영역(하단 20%, 오른쪽 버튼 열 x>0.86·y 0.45~0.85)을 확인한다.
 6. 자막 누락 프레임 0개를 확인한다.
@@ -51,6 +54,6 @@
 
 - 외부 업로드·공개·게시는 운영자의 명시적 승인 후에만 한다. 게시는 운영자가 직접 한다.
 - 원본 결과는 덮어쓰지 않는다. 납품용 변환본은 새 파일로 만든다.
-- 최종본·SRT·썸네일·메타를 에피소드 저장소 `06_편집/`·`07_게시준비/`에 올리고 PC·클라우드 md5가 같은지 확인한다.
+- 최종본·SRT·썸네일·메타를 에피소드 저장소 `06_편집/`·`07_게시준비/`에 올리고 작품 폴더 원본과 저장소 사본의 md5가 같은지 확인한다.
 - 조립·검사 스크립트는 tgz로 묶어 `06_편집/work/`에 남긴다.
 - `renders.md` 결과 절, `생성상태.md`, 회차 목록을 갱신한다.

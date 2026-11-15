@@ -204,7 +204,11 @@ def norm_chars(s):
 
 def whisper_words(model, path, lang, prompt=None):
     # 대본을 initial_prompt로 주면 숫자를 대본처럼 한글로 받아써서 글자 순번 정렬이 정확해진다
-    segs, _ = model.transcribe(path, language=lang, word_timestamps=True, vad_filter=False,
+    # 오디오는 ffmpeg로 16kHz 모노로 풀어서 넘긴다(faster-whisper 1.2.1이 PyAV 19의 open()과 맞지 않아 파일 경로를 직접 못 읽음, 2026-11-15)
+    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-f", "s16le", "-ac", "1", "-ar", "16000", "-"],
+                         capture_output=True, check=True).stdout
+    audio = np.frombuffer(pcm, np.int16).astype(np.float32) / 32768.0
+    segs, _ = model.transcribe(audio, language=lang, word_timestamps=True, vad_filter=False,
                                initial_prompt=prompt or None)
     return [(w.word, float(w.start), float(w.end)) for s in segs for w in (s.words or [])]
 

@@ -30,6 +30,7 @@ python _infra/doc-router/router.py --check
 python -m unittest discover -s _infra/doc-router/tests
 python -m unittest discover -s _infra/episode-state/tests
 python -m unittest discover -s _infra/codex-imagegen/tests
+python -m unittest discover -s _infra/board-sync/tests
 ```
 
 세 명령이 통과하면 에이전트가 요청에 맞는 문서를 고르고, 작품 상태 블록을 검사할 수 있다.
@@ -45,6 +46,8 @@ PC에서 Claude Code·Codex를 직접 실행하면 아래처럼 바꿔 읽는다
 | `device_stage_files` / `device_commit_files` (클라우드 ↔ PC 전송) | 필요 없음. 파일이 이미 같은 PC에 있다 |
 | "PC 셸은 한 번에 최대 3분" 제약 | 해당 없음. 긴 렌더(조립)도 PC에서 돌려도 된다 |
 | `get_device_info`의 `connectedFolders` | 저장소 폴더의 실제 경로 |
+
+편집·마무리(8~9단계)는 **Claude가 PC에서 직접** 하는 것이 기본이다(`craft/doctrine/production-cycle.md` §1). 그래서 아래 §4 도구는 그 PC에 있어야 한다.
 
 ---
 
@@ -84,7 +87,8 @@ ffmpeg -version                             # ffmpeg·ffprobe가 PATH에 있어�
 ```
 
 - **폰트:** 파일은 저장소에 없다. `_infra/shorts-tools/fonts/README.md`의 받는 곳에서 받아 같은 폴더에 두고, 조립 매니페스트의 `font`·`card_font`에 그 경로를 적는다.
-- **Whisper:** faster-whisper는 처음 실행할 때 모델을 내려받는다(네트워크 필요). 없으면 자막 단어 시각 단계(`assemble.py --words-only`)를 설치된 기계에서 따로 돌린다.
+- **Whisper:** faster-whisper는 처음 실행할 때 모델을 내려받는다(네트워크 필요, medium 약 1.5GB — 대용량 다운로드라 운영자 승인 후). 편집은 Claude가 같은 PC에서 하므로, 모델도 그 PC에 미리 받아 둔다.
+- **ffprobe:** `clip_qc.py`가 쓴다. ffmpeg만 있고 ffprobe가 없으면 클립 자동 검사가 돌지 않는다(2026-11-11 운영자 PC에서 확인).
 - 확인: `python _infra/shorts-tools/clip_qc.py <아무 mp4>`가 시트 이미지를 만들면 된다.
 
 ---

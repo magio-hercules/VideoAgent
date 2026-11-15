@@ -111,6 +111,45 @@ class ValidateTests(unittest.TestCase):
         s["pending_operator"] = ["대본 v03 승인"]
         self.assertEqual(es.validate(s), [])
 
+    def test_decision_card_items(self):
+        s = state(stage=9, status="waiting_operator", assignee="operator")
+        s["handoff"]["status"] = "accepted"
+        s["pending_operator"] = [
+            "Drive 업로드 여부",
+            {"id": "thumb", "question": "썸네일 고르기", "kind": "choose", "options": ["T1", "T2"], "recommend": "T2"},
+            {"question": "나레이션 3크레딧", "kind": "cost"},
+        ]
+        self.assertEqual(es.validate(s), [])
+
+    def test_decision_card_errors(self):
+        bad = [
+            {"kind": "info"},                                            # question 없음
+            {"question": "q", "kind": "vote"},                           # 모르는 kind
+            {"question": "q", "kind": "choose", "options": ["하나"]},     # 선택지 부족
+            {"question": "q", "options": ["A", "B"], "recommend": "C"},  # 추천이 선택지 밖
+            {"question": "q", "id": "공백 있음"},                         # id 형식
+            {"question": "q", "extra": 1},                               # 정의 안 된 필드
+            "",                                                          # 빈 문자열
+            3,                                                           # 형식
+        ]
+        for item in bad:
+            s = state(stage=3, status="waiting_operator", assignee="operator")
+            s["handoff"]["status"] = "none"
+            s["pending_operator"] = [item]
+            self.assertTrue(es.validate(s), item)
+
+    def test_stage_log(self):
+        s = state()
+        s["stage_log"] = [{"stage": 1, "started_at": "2026-11-13T17:20+09:00", "ended_at": None},
+                          {"stage": 0, "started_at": "2026-11-11", "ended_at": "2026-11-11", "note": "날짜만 앎"}]
+        self.assertEqual(es.validate(s), [])
+        for bad in ({"stage": 12, "started_at": "2026-11-13"}, {"stage": 1, "started_at": "어제"},
+                    {"stage": 1, "started_at": "2026-11-13T10:00"}, {"stage": 1, "started_at": "2026-11-13", "x": 1}):
+            s["stage_log"] = [bad]
+            self.assertTrue(es.validate(s), bad)
+        s["stage_log"] = "아님"
+        self.assertTrue(es.validate(s))
+
     def test_bool_is_not_int(self):
         self.assertTrue(es.validate(state(stage=True)))
 

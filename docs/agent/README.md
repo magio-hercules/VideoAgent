@@ -54,7 +54,9 @@ python -m unittest discover -s _infra/doc-router/tests
 | 점검·실행·전송·복구 절차 | `docs/runbooks/` |
 | 에피소드 기계용 상태 블록의 형식과 검사 | `_infra/episode-state/README.md` |
 | Codex 이미지 생성 도구의 조건·사용법 | `_infra/codex-imagegen/README.md` |
-| 웹 화면 설계(계획) | `docs/design/web-console.md` |
+| 제작 보드 페이지·동기화 도구 사용법 | `_infra/board-sync/README.md` |
+| 제작 보드 요청 처리 순서 (프로젝트 스킬 `/board`) | `.claude/skills/board/SKILL.md` |
+| 제작 보드의 목적·데이터·동기화·요청 처리 규칙 | `docs/design/web-console.md` |
 | 작품의 기획 | `productions/{종류}/{작품}/BRIEF.md` |
 | 현재 단계·담당·인계 상태(기계용 상태 블록)·채택판·다음 행동 | `productions/{종류}/{작품}/생성상태.md` |
 | 작품별 생성 결과·판정·성과 | `productions/{종류}/{작품}/renders.md` |

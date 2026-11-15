@@ -95,6 +95,67 @@ def load(ep_dir):
         return parse_text(f.read())
 
 
+ISO_TIME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2}))?$")
+OPTIONAL = {"stage_log"}
+
+
+def stage_log_errors(log):
+    """단계 이력: [{stage, started_at, ended_at, note}] — 시각은 시간대 붙은 ISO, 모르면 날짜만."""
+    if not isinstance(log, list):
+        return ["stage_log: 배열이어야 한다"]
+    errs = []
+    for i, x in enumerate(log):
+        if not isinstance(x, dict):
+            errs.append(f"stage_log[{i}]: 객체여야 한다")
+            continue
+        st = x.get("stage")
+        if not isinstance(st, int) or isinstance(st, bool) or not 0 <= st <= 11:
+            errs.append(f"stage_log[{i}].stage: 0~11 정수")
+        for k in ("started_at", "ended_at"):
+            v = x.get(k)
+            if k == "ended_at" and v is None:
+                continue
+            if not isinstance(v, str) or not ISO_TIME_RE.match(v):
+                errs.append(f"stage_log[{i}].{k}: 시간대 붙은 ISO 시각 또는 날짜(YYYY-MM-DD)")
+        extra = set(x) - {"stage", "started_at", "ended_at", "note"}
+        if extra:
+            errs.append(f"stage_log[{i}]: 정의되지 않은 필드 {sorted(extra)}")
+    return errs
+
+
+PENDING_KINDS = ("approve", "choose", "confirm", "cost", "info")
+PENDING_KEYS = {"id", "question", "kind", "options", "recommend", "note", "refs"}
+
+
+def pending_item_errors(x, i):
+    """대표 결정 항목: 문자열(간단형) 또는 {question, kind, options …} 객체(결정 카드형)."""
+    if isinstance(x, str):
+        return [] if x.strip() else [f"pending_operator[{i}]: 빈 문자열"]
+    if not isinstance(x, dict):
+        return [f"pending_operator[{i}]: 문자열이나 객체여야 한다"]
+    errs = []
+    if not isinstance(x.get("question"), str) or not x["question"].strip():
+        errs.append(f"pending_operator[{i}].question: 필수 문자열")
+    if x.get("kind", "info") not in PENDING_KINDS:
+        errs.append(f"pending_operator[{i}].kind: {'/'.join(PENDING_KINDS)} 중 하나")
+    opts = x.get("options", [])
+    if not isinstance(opts, list) or any(not isinstance(o, str) or not o.strip() for o in opts):
+        errs.append(f"pending_operator[{i}].options: 문자열 배열")
+    elif x.get("kind") == "choose" and len(opts) < 2:
+        errs.append(f"pending_operator[{i}]: kind=choose면 options 2개 이상")
+    rec = x.get("recommend")
+    if rec is not None and (not isinstance(opts, list) or rec not in opts):
+        errs.append(f"pending_operator[{i}].recommend: options 중 하나여야 한다")
+    if "id" in x and (not isinstance(x["id"], str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", x["id"])):
+        errs.append(f"pending_operator[{i}].id: 영문·숫자·_- 40자 이하")
+    if "refs" in x and (not isinstance(x["refs"], list) or any(not isinstance(r, str) for r in x["refs"])):
+        errs.append(f"pending_operator[{i}].refs: 문자열 배열")
+    extra = set(x) - PENDING_KEYS
+    if extra:
+        errs.append(f"pending_operator[{i}]: 정의되지 않은 필드 {sorted(extra)}")
+    return errs
+
+
 def validate(s):
     """형식·값·일관성 오류 목록."""
     errs = []
@@ -103,9 +164,11 @@ def validate(s):
             errs.append(f"필드 누락: {k}")
         elif not isinstance(s[k], t) or (t is int and isinstance(s[k], bool)):
             errs.append(f"{k}: 형식 오류")
-    extra = set(s) - set(REQUIRED)
+    extra = set(s) - set(REQUIRED) - OPTIONAL
     if extra:
         errs.append(f"정의되지 않은 필드: {sorted(extra)}")
+    if "stage_log" in s:
+        errs += stage_log_errors(s["stage_log"])
     if errs:
         return errs
     if s["schema"] != SCHEMA:
@@ -132,8 +195,8 @@ def validate(s):
         errs.append("versions 값은 문자열 또는 null")
     if s["block_count"] is not None and s["block_count"] < 1:
         errs.append("block_count는 1 이상 또는 null")
-    if any(not isinstance(x, str) for x in s["pending_operator"]):
-        errs.append("pending_operator는 문자열 배열")
+    for i, x in enumerate(s["pending_operator"]):
+        errs += pending_item_errors(x, i)
     if not re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})$", s["updated_at"]):
         errs.append("updated_at은 시간대가 붙은 ISO 시각 (예: 2026-11-11T10:00+09:00)")
     if errs:

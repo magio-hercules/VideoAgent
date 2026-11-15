@@ -20,10 +20,15 @@
 !/_infra/
 !/productions/
 !/private/
+!/.claude/
 
 # private: 안내문만 공개 (채널 설정·결정·회차·성과·금지 문자열은 비공개)
 /private/*
 !/private/README.md
+
+# .claude: 프로젝트 스킬만 공개 (개인 설정·권한은 비공개)
+/.claude/*
+!/.claude/skills/
 
 # productions: 템플릿만 공개 (작품 폴더는 비공개)
 /productions/*
